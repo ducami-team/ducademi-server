@@ -46,7 +46,6 @@ export class TokenService {
   }
 
   public async verifyToken (token : string){
-    console.log(token);
     try{
       return this.jwtService.verify(token);
     }catch(err){

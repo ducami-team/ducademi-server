@@ -29,7 +29,7 @@ export default class TokenGuard implements CanActivate {
       throw new UnauthorizedException('잘못된 토큰입니다.');
     }
 
-    const cuttingToken: string[] = token.split('Bearer');
+    const cuttingToken: string[] = token.split('Bearer ');
     if (validationData(cuttingToken[0])) {
       throw new UnauthorizedException('잘못된 토큰입니다.');
     }

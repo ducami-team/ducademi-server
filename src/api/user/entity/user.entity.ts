@@ -5,22 +5,22 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('user')
 export class User {
   @PrimaryGeneratedColumn({ name: 'id' })
-  id: number;
+  readonly id: number;
 
   @Column({ name: 'userId', unique : true })
-  userId: string;
+  readonly userId: string;
 
   @Column({ name: 'password' })
-  password: string;
+  readonly password: string;
 
   @Column({ name: 'email' })
-  email: string;
+  readonly email: string;
 
   @Column({ name: 'name' })
-  name: string;
+  readonly name: string;
 
   @Column({ name: 'grade' })
-  grade: string;
+  readonly grade: string;
 
   @Column({
     name: 'role',
@@ -28,7 +28,7 @@ export class User {
     enum: UserRole,
     default: UserRole.user,
   })
-  role: UserRole;
+  readonly role: UserRole;
 
   @OneToMany(()=> StudyBoard, (study)=>study.id)
   studyBoardId : number;
