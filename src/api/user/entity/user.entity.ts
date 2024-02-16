@@ -1,5 +1,6 @@
+import { StudyBoard } from 'src/api/study-board/entity/study-board.entity';
 import { UserRole } from 'src/global/constatnts/userRole.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
 export class User {
@@ -28,4 +29,7 @@ export class User {
     default: UserRole.user,
   })
   role: UserRole;
+
+  @OneToMany(()=> StudyBoard, (study)=>study.id)
+  studyBoardId : number;
 }
