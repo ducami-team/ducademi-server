@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { SignUpDTO } from './dto/signup.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
@@ -60,5 +60,17 @@ export class UserService {
         throw new ForbiddenException('토큰이 발급되지 않았습니다.');
     }
     return new LoginResponseDto(HttpStatus.OK, '로그인 성공', token, refreshToken);
+  }
+
+  public async findByUserId(userId : string) : Promise<User>{
+    const user : User | undefined = await this.userRepository.findOne({
+      where : {
+        userId
+      }
+    });
+    if(validationData(user)){
+      throw new NotFoundException('해당 유저의 정보를 찾을 수 없습니다.');
+    }
+    return user;
   }
 }
