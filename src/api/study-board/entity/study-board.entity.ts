@@ -4,23 +4,23 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 @Entity('study')
 export class StudyBoard{
     @PrimaryGeneratedColumn({name : 'id'})
-    id : number;
+    readonly id : number;
 
     @Column({name : 'title'})
-    title : string;
+    readonly title : string;
 
     @Column({name : 'description', length : 1000})
-    description : string;
+    readonly description : string;
 
     @Column({name : 'maxmember'})
-    maxmember : number;
+    readonly maxmember : number;
 
     @Column({name : 'recommendtarget'})
-    recommendtarget : string;
+    readonly recommendtarget : string;
 
     @ManyToOne(()=>User, (User) => User.id)
     @JoinColumn({name : 'userId'})
-    userId : string;
+    userId : number;
 
 
 }
