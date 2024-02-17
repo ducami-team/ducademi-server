@@ -1,24 +1,32 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import {
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class StudyCreateDto {
-    @IsNotEmpty()
-    @IsString()
-    title: string;
+  @IsNotEmpty()
+  @IsString()
+  title: string;
 
-    @IsNotEmpty()
-    @IsString()
-    description: string;
+  @IsNotEmpty()
+  @IsString()
+  description: string;
 
-    @IsNotEmpty()
-    @IsNumber()
-    maxmember: number;
+  @IsNotEmpty()
+  @IsNumber()
+  maxmember: number;
 
-    @IsNotEmpty()
-    @IsString()
-    recommendtarget: string;
+  @IsNotEmpty()
+  @IsString()
+  recommendtarget: string;
 
-    @IsArray()
-    categoryNames : string[];
-    
+  @IsArray()
+  categoryNames: string[];
 
+  startDate: Date;
+
+  endDate: Date;
 }

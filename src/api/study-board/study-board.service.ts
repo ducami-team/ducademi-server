@@ -28,6 +28,8 @@ export class StudyBoardService {
       description: studyCreateDto.description,
       maxmember: studyCreateDto.maxmember,
       recommendtarget: studyCreateDto.recommendtarget,
+      startDate : studyCreateDto.startDate,
+      endDate : studyCreateDto.endDate,
       user,
       categories,
     };
