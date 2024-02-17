@@ -5,13 +5,15 @@ import { ConfigModule } from '@nestjs/config';
 import { DbModule } from './db/db.module';
 import { UserModule } from './api/user/user.module';
 import { StudyBoardModule } from './api/study-board/study-board.module';
+import { CategoryModule } from './api/category/category.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     DbModule,
     UserModule,
-    StudyBoardModule
+    StudyBoardModule,
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [AppService],

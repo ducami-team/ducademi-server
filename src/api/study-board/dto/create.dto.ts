@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class StudyCreateDto {
     @IsNotEmpty()
@@ -16,6 +16,9 @@ export class StudyCreateDto {
     @IsNotEmpty()
     @IsString()
     recommendtarget: string;
+
+    @IsArray()
+    categoryNames : string[];
     
 
 }
