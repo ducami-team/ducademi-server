@@ -28,8 +28,10 @@ export class StudyBoardService {
       description: studyCreateDto.description,
       maxmember: studyCreateDto.maxmember,
       recommendtarget: studyCreateDto.recommendtarget,
-      startDate : studyCreateDto.startDate,
-      endDate : studyCreateDto.endDate,
+      studyStartDate: studyCreateDto.studyStartDate,
+      studyEndDate: studyCreateDto.studyEndDate,
+      applyStartDate: studyCreateDto.applyStartDate,
+      applyEndDate: studyCreateDto.applyEndDate,
       user,
       categories,
     };
@@ -37,7 +39,6 @@ export class StudyBoardService {
   }
 
   public async fix(
-    user: User,
     studyFixDto: StudyFixDto,
     studyId: number,
   ): Promise<StudyBoard> {
@@ -48,5 +49,24 @@ export class StudyBoardService {
       recommendtarget: studyFixDto.recommendtarget,
     });
     return fixedStudy;
+  }
+
+  public async possibleApply(): Promise<StudyBoard[]> {
+    const studyBoards = this.studyRepository
+      .createQueryBuilder('study')
+      .where(
+        'study.applyStartDate < :currentTime && study.applyEndDate > :currentTime',
+        { currentTime: new Date() },
+      )
+      .getMany();
+    return studyBoards;
+  }
+
+  public async beCreatedStudy(): Promise<StudyBoard[]> {
+    const studyBoards = this.studyRepository
+      .createQueryBuilder('study')
+      .where('study.applyStartDate > :currentTime', { currentTime: new Date() })
+      .getMany();
+    return studyBoards;
   }
 }

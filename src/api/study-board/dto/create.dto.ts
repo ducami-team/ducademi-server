@@ -1,6 +1,5 @@
 import {
   IsArray,
-  IsDate,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -26,7 +25,9 @@ export class StudyCreateDto {
   @IsArray()
   categoryNames: string[];
 
-  startDate: Date;
+  applyStartDate: Date;
+  applyEndDate: Date;
+  studyStartDate: Date;
 
-  endDate: Date;
+  studyEndDate: Date;
 }

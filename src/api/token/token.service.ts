@@ -56,7 +56,7 @@ export class TokenService {
         case 'invalid token':
         case 'invalid signature':
           throw new UnauthorizedException('위조된 토큰입니다.');
-        case 'jwt expired':
+        case ' jwt expired':
           throw new GoneException('토큰이 만료되었습니다.');
         default:
           Logger.error(err);

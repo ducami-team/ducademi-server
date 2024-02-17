@@ -1,4 +1,13 @@
-import { Body, Controller, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { StudyBoardService } from './study-board.service';
 import { StudyCreateDto } from './dto/create.dto';
 import BaseResponse from 'src/global/response/base.response';
@@ -32,15 +41,35 @@ export class StudyBoardController {
   @Patch('/fix/:id')
   @UseGuards(TokenGuard)
   public async fix(
-    @Token() user : User,
-    @Body() studyFixDto:StudyFixDto,
-    @Param('id') studyId : number,
-  ): Promise<BaseResponse<void>>{
-    const study : StudyBoard = await this.studyBoardService.fix(user, studyFixDto, studyId);
-    return new BaseResponse<void>(
+    @Token() user: User,
+    @Body() studyFixDto: StudyFixDto,
+    @Param('id') studyId: number,
+  ): Promise<BaseResponse<void>> {
+    const study: StudyBoard = await this.studyBoardService.fix(
+      studyFixDto,
+      studyId,
+    );
+    return new BaseResponse<void>(HttpStatus.OK, '강의 수정 완료', undefined);
+  }
+
+  @Get('/possible')
+  public async possibleStudy(): Promise<BaseResponse<StudyBoard[]>> {
+    const studyBoards: StudyBoard[] =
+      await this.studyBoardService.possibleApply();
+    return new BaseResponse<StudyBoard[]>(
       HttpStatus.OK,
-      '강의 수정 완료',
-      undefined
-    )
+      '신청 가능한 교육 조회 성공',
+      studyBoards,
+    );
+  }
+  @Get('/soon')
+  public async beCreatedStudy(): Promise<BaseResponse<StudyBoard[]>> {
+    const studyBoards: StudyBoard[] =
+      await this.studyBoardService.beCreatedStudy();
+    return new BaseResponse<StudyBoard[]>(
+      HttpStatus.OK,
+      '개설 예정인 교육 조회 성공',
+      studyBoards,
+    );
   }
 }

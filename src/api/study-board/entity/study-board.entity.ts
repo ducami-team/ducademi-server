@@ -27,11 +27,17 @@ export class StudyBoard {
   @Column({ name: 'recommendtarget' })
   readonly recommendtarget: string;
 
-  @Column({ name : 'startDate'})
-  readonly startDate : Date;
+  @Column({ name : 'applyStartDate'})
+  readonly applyStartDate : Date;
 
-  @Column({name : 'endDate'})
-  readonly endDate: Date;
+  @Column({name : 'applyEndDate'})
+  readonly applyEndDate: Date;
+
+  @Column({name : 'studyStartDate'})
+  readonly studyStartDate : Date;
+
+  @Column({name : 'studyEndDate'})
+  readonly studyEndDate : Date;
 
   @ManyToOne(() => User, (User) => User.studyBoardId)
   user: User;
