@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { LoginDto } from './dto/login.dto';
 import { LoginResponseDto } from './dto/loginResponse.dto';
 import TokenGuard from 'src/global/guard/token.guard';
 import { Token } from 'src/global/decorators/token.decorator';
+import { UserFixDto } from './dto/userFix.dto';
 
 @Controller('user')
 export class UserController {
@@ -46,6 +48,20 @@ export class UserController {
       HttpStatus.OK,
       '마이 페이지 조회 성공',
       myUser,
+    );
+  }
+
+  @Patch('/fix')
+  @UseGuards(TokenGuard)
+  public async fix(
+    @Token() user: User,
+    @Body() userFixDto: UserFixDto,
+  ): Promise<BaseResponse<User>> {
+    const fixedUser: any = await this.userService.fixUser(user, userFixDto);
+    return new BaseResponse<User>(
+      HttpStatus.OK,
+      '회원정보 수정 성공',
+      fixedUser,
     );
   }
 }
