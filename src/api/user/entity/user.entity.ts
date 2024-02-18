@@ -1,6 +1,7 @@
+import { Registration } from 'src/api/registration/entity/registration.entity';
 import { StudyBoard } from 'src/api/study-board/entity/study-board.entity';
 import { UserRole } from 'src/global/constatnts/userRole.enum';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
 export class User {
@@ -30,6 +31,14 @@ export class User {
   })
   readonly role: UserRole;
 
+  @CreateDateColumn({name : 'createdAt'})
+  createdAt : Date;
+
   @OneToMany(()=> StudyBoard, (study)=>study.id)
   studyBoardId : number;
+
+  @OneToMany(()=>Registration, (registration)=> registration.user)
+  registration : Registration[];
+
+  
 }

@@ -11,5 +11,6 @@ import { CategoryModule } from '../category/category.module';
   imports: [TypeOrmModule.forFeature([StudyBoard]), UserModule, TokenModule, CategoryModule],
   controllers: [StudyBoardController],
   providers: [StudyBoardService],
+  exports : [StudyBoardService]
 })
 export class StudyBoardModule {}

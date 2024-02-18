@@ -69,4 +69,13 @@ export class StudyBoardService {
       .getMany();
     return studyBoards;
   }
+
+  public async findStudyBoardById(studyId : number) : Promise<StudyBoard>{
+    const studyBoard : StudyBoard = await this.studyRepository.findOne({
+      where : {
+        id : studyId
+      }
+    });
+    return studyBoard;
+  }
 }

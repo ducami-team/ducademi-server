@@ -6,6 +6,7 @@ import { DbModule } from './db/db.module';
 import { UserModule } from './api/user/user.module';
 import { StudyBoardModule } from './api/study-board/study-board.module';
 import { CategoryModule } from './api/category/category.module';
+import { RegistrationModule } from './api/registration/registration.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { CategoryModule } from './api/category/category.module';
     DbModule,
     UserModule,
     StudyBoardModule,
-    CategoryModule
+    CategoryModule,
+    RegistrationModule
   ],
   controllers: [AppController],
   providers: [AppService],
