@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { StudyBoardService } from './study-board.service';
 import { StudyCreateDto } from './dto/create.dto';
@@ -16,6 +18,8 @@ import TokenGuard from 'src/global/guard/token.guard';
 import { Token } from 'src/global/decorators/token.decorator';
 import { User } from '../user/entity/user.entity';
 import { StudyFixDto } from './dto/fix.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MulterFile} from 'multer';
 
 @Controller('study')
 export class StudyBoardController {
@@ -23,13 +27,16 @@ export class StudyBoardController {
 
   @Post('/create')
   @UseGuards(TokenGuard)
+  @UseInterceptors( FileInterceptor('file'))
   public async create(
     @Token() user: User,
     @Body() studyCreateDto: StudyCreateDto,
+    @UploadedFile() file : MulterFile
   ): Promise<BaseResponse<void>> {
     const study: StudyBoard = await this.studyBoardService.create(
       user,
       studyCreateDto,
+      file
     );
     return new BaseResponse<void>(
       HttpStatus.CREATED,

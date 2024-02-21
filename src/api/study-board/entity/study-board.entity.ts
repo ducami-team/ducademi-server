@@ -42,8 +42,11 @@ export class StudyBoard {
   @Column({ name: 'studyEndDate' })
   readonly studyEndDate: Date;
 
-  @CreateDateColumn({name : 'createdAt'})
-  readonly createdAt : Date;
+  @CreateDateColumn({ name: 'createdAt' })
+  readonly createdAt: Date;
+
+  @Column({ name: 'image', nullable: true })
+  readonly image: string;
 
   @ManyToOne(() => User, (User) => User.studyBoardId)
   user: User;

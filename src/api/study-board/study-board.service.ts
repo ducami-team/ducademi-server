@@ -7,6 +7,9 @@ import { User } from '../user/entity/user.entity';
 import { StudyFixDto } from './dto/fix.dto';
 import { Category } from '../category/entity/category.entity';
 import { CategoryService } from '../category/category.service';
+import { ConfigService } from '@nestjs/config';
+import { AwsService } from '../aws/aws.service';
+import { validationData } from 'src/global/utils/validation.util';
 
 @Injectable()
 export class StudyBoardService {
@@ -14,15 +17,19 @@ export class StudyBoardService {
     @InjectRepository(StudyBoard)
     private readonly studyRepository: Repository<StudyBoard>,
     private readonly categoryService: CategoryService,
+    private readonly awsService: AwsService,
   ) {}
 
   public async create(
     user: User,
     studyCreateDto: StudyCreateDto,
+    file: any,
   ): Promise<StudyBoard> {
     const categories: Category[] = await this.categoryService.create(
       studyCreateDto.categoryNames,
     );
+    
+    const imageUpload: string | undefined = await this.imageUpload(file);
     const studyBoard: any = {
       title: studyCreateDto.title,
       description: studyCreateDto.description,
@@ -32,6 +39,7 @@ export class StudyBoardService {
       studyEndDate: studyCreateDto.studyEndDate,
       applyStartDate: studyCreateDto.applyStartDate,
       applyEndDate: studyCreateDto.applyEndDate,
+      image: imageUpload ? imageUpload : undefined,
       user,
       categories,
     };
@@ -70,12 +78,29 @@ export class StudyBoardService {
     return studyBoards;
   }
 
-  public async findStudyBoardById(studyId : number) : Promise<StudyBoard>{
-    const studyBoard : StudyBoard = await this.studyRepository.findOne({
-      where : {
-        id : studyId
-      }
+  public async findStudyBoardById(studyId: number): Promise<StudyBoard> {
+    const studyBoard: StudyBoard = await this.studyRepository.findOne({
+      where: {
+        id: studyId,
+      },
     });
     return studyBoard;
+  }
+
+  async imageUpload(file: any) {
+    if (!file) {
+      return;
+    }
+
+    const imageName = Date.now();
+    const ext = file.originalname.split('.').pop();
+
+    const imageUrl = await this.awsService.imageUploadToS3(
+      `${imageName}.${ext}`,
+      file,
+      ext,
+    );
+
+    return imageUrl;
   }
 }

@@ -15,7 +15,6 @@ export class StudyCreateDto {
   description: string;
 
   @IsNotEmpty()
-  @IsNumber()
   maxmember: number;
 
   @IsNotEmpty()
