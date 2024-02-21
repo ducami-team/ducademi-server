@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Registration } from './entity/registration.entity';
 import { Repository } from 'typeorm';
@@ -26,15 +30,15 @@ export class RegistrationService {
     const studyBoard: StudyBoard | undefined =
       await this.studyBoardSerice.findStudyBoardById(studyId);
     if (validationData(findUser)) {
-      throw new NotFoundException('사용자 또는 강의를 찾을 수 없습니다.');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
     const existringRegistration: Registration | undefined =
       await this.registrationRepository.findOne({
-        where: { user: user, study: studyBoard },
+        where: { user: { id: user.id }, study: { id: studyBoard.id } },
       });
 
     if (!validationData(existringRegistration)) {
-      throw new Error('이미 해당 이벤트에 신청 되어 있습니다.');
+      throw new BadRequestException('이미 신청한 강의 입니다.');
     }
 
     const registration: any = {
@@ -43,5 +47,23 @@ export class RegistrationService {
     };
 
     return await this.registrationRepository.save(registration);
+  }
+
+  public async myRegistration(user: User): Promise<StudyBoard[]> {
+    const registrations = await this.registrationRepository.find({
+      where: { user: { id: user.id } },
+      relations: ['user', 'study'],
+    });
+    
+    const studyBoards = Promise.all(
+      registrations.map(async (registration) => {
+        let studyBoard = await this.studyBoardSerice.findStudyBoardById(
+          registration.study.id,
+        );
+        return studyBoard;
+        
+      }),
+    );
+    return studyBoards;
   }
 }
