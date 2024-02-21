@@ -15,13 +15,14 @@ export class AwsService {
     });
   }
   public async imageUploadToS3(
+    type : string,
     fileName: string,
     file: any,
     ext: string,
-  ) {
+  ) {    
     const command = new PutObjectCommand({
       Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
-      Key: fileName,
+      Key: `${type}/${fileName}`,
       Body: file.buffer,
       ACL: 'public-read-write',
       ContentType: `image/${ext}`,

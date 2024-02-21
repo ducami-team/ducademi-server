@@ -29,7 +29,7 @@ export class StudyBoardService {
       studyCreateDto.categoryNames,
     );
     
-    const imageUpload: string | undefined = await this.imageUpload(file);
+    const imageUpload: string | undefined = await this.imageUpload(file, 'study');
     const studyBoard: any = {
       title: studyCreateDto.title,
       description: studyCreateDto.description,
@@ -87,7 +87,7 @@ export class StudyBoardService {
     return studyBoard;
   }
 
-  async imageUpload(file: any) {
+  public async imageUpload(file: any, type : string) {
     if (!file) {
       return;
     }
@@ -96,6 +96,7 @@ export class StudyBoardService {
     const ext = file.originalname.split('.').pop();
 
     const imageUrl = await this.awsService.imageUploadToS3(
+      type,
       `${imageName}.${ext}`,
       file,
       ext,
