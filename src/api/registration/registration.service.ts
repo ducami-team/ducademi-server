@@ -25,7 +25,7 @@ export class RegistrationService {
     );
     const studyBoard: StudyBoard | undefined =
       await this.studyBoardSerice.findStudyBoardById(studyId);
-    if (validationData(findUser) || validationData(studyBoard)) {
+    if (validationData(findUser)) {
       throw new NotFoundException('사용자 또는 강의를 찾을 수 없습니다.');
     }
     const existringRegistration: Registration | undefined =

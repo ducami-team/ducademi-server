@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudyBoard } from './entity/study-board.entity';
 import { Repository } from 'typeorm';
@@ -7,9 +7,10 @@ import { User } from '../user/entity/user.entity';
 import { StudyFixDto } from './dto/fix.dto';
 import { Category } from '../category/entity/category.entity';
 import { CategoryService } from '../category/category.service';
-import { ConfigService } from '@nestjs/config';
 import { AwsService } from '../aws/aws.service';
 import { validationData } from 'src/global/utils/validation.util';
+import { NotFound } from '@aws-sdk/client-s3';
+
 
 @Injectable()
 export class StudyBoardService {
@@ -84,6 +85,9 @@ export class StudyBoardService {
         id: studyId,
       },
     });
+    if(validationData(studyBoard)){
+      throw new NotFoundException('존재하지 않는 강의 입니다.');
+    }
     return studyBoard;
   }
 

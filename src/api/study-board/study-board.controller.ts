@@ -79,4 +79,11 @@ export class StudyBoardController {
       studyBoards,
     );
   }
+  @Get('/detail/:id')
+  public async studyDetail(@Param('id') studyId : number): Promise<BaseResponse<StudyBoard>>{
+    const studyBoard : StudyBoard = await this.studyBoardService.findStudyBoardById(studyId);
+    return new BaseResponse<StudyBoard>(HttpStatus.OK, '강의 상세보기 조회 성공',studyBoard);
+  }
+
+  
 }
