@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -25,39 +26,7 @@ import { MulterFile} from 'multer';
 export class StudyBoardController {
   constructor(private readonly studyBoardService: StudyBoardService) {}
 
-  @Post('/create')
-  @UseGuards(TokenGuard)
-  @UseInterceptors( FileInterceptor('file'))
-  public async create(
-    @Token() user: User,
-    @Body() studyCreateDto: StudyCreateDto,
-    @UploadedFile() file : MulterFile
-  ): Promise<BaseResponse<void>> {
-    const study: StudyBoard = await this.studyBoardService.create(
-      user,
-      studyCreateDto,
-      file
-    );
-    return new BaseResponse<void>(
-      HttpStatus.CREATED,
-      '강의 생성 성공',
-      undefined,
-    );
-  }
-
-  @Patch('/fix/:id')
-  @UseGuards(TokenGuard)
-  public async fix(
-    @Token() user: User,
-    @Body() studyFixDto: StudyFixDto,
-    @Param('id') studyId: number,
-  ): Promise<BaseResponse<void>> {
-    const study: StudyBoard = await this.studyBoardService.fix(
-      studyFixDto,
-      studyId,
-    );
-    return new BaseResponse<void>(HttpStatus.OK, '강의 수정 완료', undefined);
-  }
+ 
 
   @Get('/possible')
   public async possibleStudy(): Promise<BaseResponse<StudyBoard[]>> {
@@ -84,6 +53,8 @@ export class StudyBoardController {
     const studyBoard : StudyBoard = await this.studyBoardService.findStudyBoardById(studyId);
     return new BaseResponse<StudyBoard>(HttpStatus.OK, '강의 상세보기 조회 성공',studyBoard);
   }
+
+
 
   
 }

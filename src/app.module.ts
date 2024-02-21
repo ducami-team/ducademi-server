@@ -7,6 +7,7 @@ import { UserModule } from './api/user/user.module';
 import { StudyBoardModule } from './api/study-board/study-board.module';
 import { CategoryModule } from './api/category/category.module';
 import { RegistrationModule } from './api/registration/registration.module';
+import { AdminModule } from './api/admin/admin.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { RegistrationModule } from './api/registration/registration.module';
     UserModule,
     StudyBoardModule,
     CategoryModule,
-    RegistrationModule
+    RegistrationModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

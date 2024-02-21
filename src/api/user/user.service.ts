@@ -8,7 +8,7 @@ import {
 import { SignUpDTO } from './dto/signup.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
-import { Repository } from 'typeorm';
+import { Admin, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { validationData } from 'src/global/utils/validation.util';
@@ -17,6 +17,7 @@ import { LoginResponseDto } from './dto/loginResponse.dto';
 import { TokenService } from '../token/token.service';
 import { UserFixDto } from './dto/userFix.dto';
 import { isDifferentUtil } from 'src/global/utils/comparsion.util';
+import { UserRole } from 'src/global/constatnts/userRole.enum';
 
 @Injectable()
 export class UserService {
@@ -42,6 +43,7 @@ export class UserService {
       email: signupDto.email,
       name: signupDto.name,
       grade: signupDto.grade,
+      //role : UserRole.admin
     });
   }
 
