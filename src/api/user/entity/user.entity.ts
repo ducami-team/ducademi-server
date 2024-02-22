@@ -1,3 +1,4 @@
+
 import { Registration } from 'src/api/registration/entity/registration.entity';
 import { StudyBoard } from 'src/api/study-board/entity/study-board.entity';
 import { UserRole } from 'src/global/constatnts/userRole.enum';
@@ -22,6 +23,9 @@ export class User {
 
   @Column({ name: 'grade' })
   readonly grade: string;
+
+  @Column({name : 'image', nullable : true})
+  readonly image : string;
 
   @Column({
     name: 'role',

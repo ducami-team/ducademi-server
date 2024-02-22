@@ -4,13 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Registration } from './entity/registration.entity';
+
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 import { StudyBoardService } from '../study-board/study-board.service';
 import { User } from '../user/entity/user.entity';
 import { StudyBoard } from '../study-board/entity/study-board.entity';
 import { validationData } from 'src/global/utils/validation.util';
+import { Registration } from './entity/registration.entity';
 
 @Injectable()
 export class RegistrationService {

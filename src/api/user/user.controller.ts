@@ -5,7 +5,9 @@ import {
   HttpStatus,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import BaseResponse from 'src/global/response/base.response';
@@ -16,6 +18,7 @@ import { LoginResponseDto } from './dto/loginResponse.dto';
 import TokenGuard from 'src/global/guard/token.guard';
 import { Token } from 'src/global/decorators/token.decorator';
 import { UserFixDto } from './dto/userFix.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -53,11 +56,13 @@ export class UserController {
 
   @Patch('/fix')
   @UseGuards(TokenGuard)
+  @UseInterceptors(FileInterceptor('file'))
   public async fix(
     @Token() user: User,
     @Body() userFixDto: UserFixDto,
+    @UploadedFile() file : any
   ): Promise<BaseResponse<User>> {
-    const fixedUser: any = await this.userService.fixUser(user, userFixDto);
+    const fixedUser: any = await this.userService.fixUser(user, userFixDto,file);
     return new BaseResponse<User>(
       HttpStatus.OK,
       '회원정보 수정 성공',

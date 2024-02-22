@@ -9,7 +9,7 @@ import {
 import { SignUpDTO } from './dto/signup.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
-import { Admin, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { validationData } from 'src/global/utils/validation.util';
@@ -19,6 +19,7 @@ import { TokenService } from '../token/token.service';
 import { UserFixDto } from './dto/userFix.dto';
 import { isDifferentUtil } from 'src/global/utils/comparsion.util';
 import { UserRole } from 'src/global/constatnts/userRole.enum';
+import { AwsService } from '../aws/aws.service';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,7 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly tokenService: TokenService,
+    private readonly awsService: AwsService,
   ) {}
   public async signUp(signupDto: SignUpDTO): Promise<User> {
     const user: User | undefined = await this.userRepository.findOne({
@@ -94,7 +96,11 @@ export class UserService {
     return user;
   }
 
-  public async fixUser(user: User, userFixDto: UserFixDto): Promise<User> {
+  public async fixUser(
+    user: User,
+    userFixDto: UserFixDto,
+    file: any,
+  ): Promise<User> {
     const findUser: User | undefined = await this.userRepository.findOne({
       where: { userId: userFixDto.userId },
     });
@@ -104,22 +110,27 @@ export class UserService {
     ) {
       throw new BadRequestException('이미 사용중인 ID입니다.');
     }
+    const imageUpload = await this.awsService.imageUpload(file, 'user');
     await this.userRepository.update(user.id, {
       userId: userFixDto.userId,
       email: userFixDto.email,
       name: userFixDto.name,
       grade: userFixDto.grade,
+      image: imageUpload,
     });
 
     return await this.userRepository.findOne({
       where: { id: user.id },
-      select: ['id', 'userId', 'email', 'name', 'grade'],
+      select: ['id', 'userId', 'email', 'name', 'grade','image'],
     });
   }
 
-  public async verifyUser(loginUserId : number, studyMadeByUserId: number) : Promise<boolean>{
-    if(isDifferentUtil(loginUserId, studyMadeByUserId)){
-      throw new UnauthorizedException('본인에 게시물만 수정 할 수 있습니다.');
+  public async verifyUser(
+    loginUserId: number,
+    studyMadeByUserId: number,
+  ): Promise<boolean> {
+    if (isDifferentUtil(loginUserId, studyMadeByUserId)) {
+      throw new UnauthorizedException('본인에 강의만 수정 할 수 있습니다.');
     }
     return true;
   }
