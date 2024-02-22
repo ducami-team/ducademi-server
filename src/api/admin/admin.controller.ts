@@ -1,4 +1,15 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserRole } from 'src/global/constatnts/userRole.enum';
 import { Roles } from '../../global/decorators/roles.decorator';
 import RoleGuard from 'src/global/guard/role.guard';
@@ -9,24 +20,23 @@ import { StudyCreateDto } from '../study-board/dto/create.dto';
 import BaseResponse from 'src/global/response/base.response';
 import { StudyBoard } from '../study-board/entity/study-board.entity';
 import { StudyBoardService } from '../study-board/study-board.service';
-import TokenGuard from 'src/global/guard/token.guard';
 import { StudyFixDto } from '../study-board/dto/fix.dto';
 @Roles(UserRole.admin)
 @UseGuards(RoleGuard)
-@Controller('admin')
+@Controller('admin/study')
 export class AdminController {
-  constructor(private readonly studyBoardService : StudyBoardService) {}
+  constructor(private readonly studyBoardService: StudyBoardService) {}
   @Post('/create')
-  @UseInterceptors( FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   public async create(
     @Token() user: User,
     @Body() studyCreateDto: StudyCreateDto,
-    @UploadedFile() file : any
+    @UploadedFile() file: any,
   ): Promise<BaseResponse<void>> {
     const study: StudyBoard = await this.studyBoardService.create(
       user,
       studyCreateDto,
-      file
+      file,
     );
     return new BaseResponse<void>(
       HttpStatus.CREATED,
@@ -36,15 +46,27 @@ export class AdminController {
   }
 
   @Patch('/fix/:id')
+  @UseInterceptors(FileInterceptor('file'))
   public async fix(
     @Token() user: User,
     @Body() studyFixDto: StudyFixDto,
     @Param('id') studyId: number,
+    @UploadedFile() file: any,
   ): Promise<BaseResponse<void>> {
     const study: StudyBoard = await this.studyBoardService.fix(
       studyFixDto,
       studyId,
+      user,
+      file,
     );
     return new BaseResponse<void>(HttpStatus.OK, '강의 수정 완료', undefined);
+  }
+  @Delete('/fire/:id')
+  public async delete(
+    @Token() user: User,
+    @Param('id') studyId: number,
+  ): Promise<BaseResponse<void>> {
+    await this.studyBoardService.studyFire(user, studyId);
+    return new BaseResponse<void>(HttpStatus.OK, '강의 삭제 완료', undefined);
   }
 }

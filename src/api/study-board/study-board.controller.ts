@@ -12,15 +12,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { StudyBoardService } from './study-board.service';
-import { StudyCreateDto } from './dto/create.dto';
 import BaseResponse from 'src/global/response/base.response';
 import { StudyBoard } from './entity/study-board.entity';
-import TokenGuard from 'src/global/guard/token.guard';
-import { Token } from 'src/global/decorators/token.decorator';
-import { User } from '../user/entity/user.entity';
-import { StudyFixDto } from './dto/fix.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { MulterFile} from 'multer';
 
 @Controller('study')
 export class StudyBoardController {

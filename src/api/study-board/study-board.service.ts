@@ -9,8 +9,7 @@ import { Category } from '../category/entity/category.entity';
 import { CategoryService } from '../category/category.service';
 import { AwsService } from '../aws/aws.service';
 import { validationData } from 'src/global/utils/validation.util';
-import { NotFound } from '@aws-sdk/client-s3';
-
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class StudyBoardService {
@@ -19,6 +18,7 @@ export class StudyBoardService {
     private readonly studyRepository: Repository<StudyBoard>,
     private readonly categoryService: CategoryService,
     private readonly awsService: AwsService,
+    private readonly userService: UserService,
   ) {}
 
   public async create(
@@ -29,8 +29,11 @@ export class StudyBoardService {
     const categories: Category[] = await this.categoryService.create(
       studyCreateDto.categoryNames,
     );
-    
-    const imageUpload: string | undefined = await this.imageUpload(file, 'study');
+
+    const imageUpload: string | undefined = await this.awsService.imageUpload(
+      file,
+      'study',
+    );
     const studyBoard: any = {
       title: studyCreateDto.title,
       description: studyCreateDto.description,
@@ -50,14 +53,49 @@ export class StudyBoardService {
   public async fix(
     studyFixDto: StudyFixDto,
     studyId: number,
+    user: User,
+    file: any,
   ): Promise<StudyBoard> {
+    const study = await this.findStudyBoardById(studyId);
+    if (validationData(study)) {
+      throw new NotFoundException('존재하지 않는 강의 입니다.');
+    }
+
+    await this.userService.verifyUser(user.id, study.user.id);
+    const imageUpload: string | undefined = await this.awsService.imageUpload(
+      file,
+      'study',
+    );
+    const categories = await this.categoryService.create(
+      studyFixDto.categoryNames,
+    );
+
     const fixedStudy: any = await this.studyRepository.update(+studyId, {
       title: studyFixDto.title,
       description: studyFixDto.description,
-      maxmember: studyFixDto.maxmember,
+      maxmember: +studyFixDto.maxmember,
       recommendtarget: studyFixDto.recommendtarget,
+      studyStartDate: studyFixDto.studyStartDate,
+      studyEndDate: studyFixDto.studyEndDate,
+      image: imageUpload,
     });
+    await this.studyRepository
+      .createQueryBuilder()
+      .relation(StudyBoard, 'categories')
+      .of(studyId)
+      .addAndRemove(categories, study.categories);
     return fixedStudy;
+  }
+
+  public async studyFire(user : User, studyId : number) : Promise<void>{
+
+    const study = await this.findStudyBoardById(studyId);
+    if (validationData(study)) {
+      throw new NotFoundException('존재하지 않는 강의 입니다.');
+    }
+    await this.userService.verifyUser(user.id, study.user.id);
+    await this.studyRepository.delete(study.id);
+
   }
 
   public async possibleApply(): Promise<StudyBoard[]> {
@@ -84,28 +122,11 @@ export class StudyBoardService {
       where: {
         id: studyId,
       },
+      relations: ['user', 'categories'],
     });
-    if(validationData(studyBoard)){
+    if (validationData(studyBoard)) {
       throw new NotFoundException('존재하지 않는 강의 입니다.');
     }
     return studyBoard;
-  }
-
-  public async imageUpload(file: any, type : string) {
-    if (!file) {
-      return;
-    }
-
-    const imageName = Date.now();
-    const ext = file.originalname.split('.').pop();
-
-    const imageUrl = await this.awsService.imageUploadToS3(
-      type,
-      `${imageName}.${ext}`,
-      file,
-      ext,
-    );
-
-    return imageUrl;
   }
 }

@@ -30,4 +30,22 @@ export class AwsService {
     await this.s3Client.send(command);
     return `https://s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_S3_BUCKET_NAME}/${fileName}`;
   }
+
+  public async imageUpload(file: any, type: string) {
+    if (!file) {
+      return;
+    }
+
+    const imageName = Date.now();
+    const ext = file.originalname.split('.').pop();
+
+    const imageUrl = await this.imageUploadToS3(
+      type,
+      `${imageName}.${ext}`,
+      file,
+      ext,
+    );
+
+    return imageUrl;
+  }
 }

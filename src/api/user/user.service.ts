@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { SignUpDTO } from './dto/signup.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -114,5 +115,12 @@ export class UserService {
       where: { id: user.id },
       select: ['id', 'userId', 'email', 'name', 'grade'],
     });
+  }
+
+  public async verifyUser(loginUserId : number, studyMadeByUserId: number) : Promise<boolean>{
+    if(isDifferentUtil(loginUserId, studyMadeByUserId)){
+      throw new UnauthorizedException('본인에 게시물만 수정 할 수 있습니다.');
+    }
+    return true;
   }
 }
