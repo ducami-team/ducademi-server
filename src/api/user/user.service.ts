@@ -18,13 +18,15 @@ import { LoginResponseDto } from './dto/loginResponse.dto';
 import { TokenService } from '../token/token.service';
 import { UserFixDto } from './dto/userFix.dto';
 import { isDifferentUtil } from 'src/global/utils/comparsion.util';
-import { UserRole } from 'src/global/constatnts/userRole.enum';
 import { AwsService } from '../aws/aws.service';
+import { VerifyCode } from './entity/verifyCode.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(VerifyCode)
+    private readonly verifyCodeRepository: Repository<VerifyCode>,
     private readonly configService: ConfigService,
     private readonly tokenService: TokenService,
     private readonly awsService: AwsService,
@@ -35,11 +37,20 @@ export class UserService {
         userId: signupDto.userId,
       },
     });
+    const userByEmail: User | undefined = await this.userRepository.findOne({
+      where: {
+        email: signupDto.email,
+      },
+    });
     const salt: number = +this.configService.get<number>('HASH_SALT');
     const hashedPassword: string = await bcrypt.hash(signupDto.password, salt);
-    if (!validationData(user)) {
+    if (user) {
       throw new BadRequestException('중복된 아이디 입니다.');
     }
+    if (userByEmail) {
+      throw new BadRequestException('중복된 이메일 입니다.');
+    }
+
     return await this.userRepository.save({
       userId: signupDto.userId,
       password: hashedPassword,
@@ -59,10 +70,11 @@ export class UserService {
     if (validationData(user)) {
       throw new BadRequestException('존재하지 않는 유저 입니다.');
     }
-    const isCorrectPassworrd: boolean = bcrypt.compare(
+    const isCorrectPassworrd: boolean = await bcrypt.compare(
       loginDto.password,
       user.password,
     );
+
     if (!isCorrectPassworrd) {
       throw new BadRequestException('옳지 않은 비밀번호입니다.');
     }
@@ -121,7 +133,7 @@ export class UserService {
 
     return await this.userRepository.findOne({
       where: { id: user.id },
-      select: ['id', 'userId', 'email', 'name', 'grade','image'],
+      select: ['id', 'userId', 'email', 'name', 'grade', 'image'],
     });
   }
 
@@ -134,4 +146,49 @@ export class UserService {
     }
     return true;
   }
+
+  public async findByEmail(email: string): Promise<User> {
+    const user: User | undefined = await this.userRepository.findOne({
+      where: { email },
+    });
+    if (validationData(user)) {
+      throw new NotFoundException('존재하지 않는 유저 입니다.');
+    }
+    return user;
+  }
+
+  public async generateVerifycationCode(user: User): Promise<string> {
+    const code: string = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(code);
+    const codeSave: any = {
+      code,
+      user,
+    };
+    console.log(codeSave);
+    await this.verifyCodeRepository.save(codeSave);
+    console.log('hi');
+    return code;
+  }
+
+  public async verifyCode(userId: number, code: string): Promise<boolean> {
+    const verifyCationCode = await this.verifyCodeRepository.findOne({
+      where: { code, user: { id: userId } },
+    });
+    if (verifyCationCode) {
+      await this.verifyCodeRepository.delete(verifyCationCode.id);
+      return true;
+    }
+    return false;
+  }
+
+  public async resetPassword(
+    userId: number,
+    newPassword: string,
+  ): Promise<void> {
+    const salt: number = +this.configService.get<number>('HASH_SALT');
+    const hashedPassword: string = await bcrypt.hash(newPassword, salt);
+    await this.userRepository.update(userId, { password: hashedPassword });
+    return;
+  }
+  
 }

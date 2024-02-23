@@ -2,7 +2,8 @@
 import { Registration } from 'src/api/registration/entity/registration.entity';
 import { StudyBoard } from 'src/api/study-board/entity/study-board.entity';
 import { UserRole } from 'src/global/constatnts/userRole.enum';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { VerifyCode } from './verifyCode.entity';
 
 @Entity('user')
 export class User {
@@ -15,7 +16,7 @@ export class User {
   @Column({ name: 'password' })
   readonly password: string;
 
-  @Column({ name: 'email' })
+  @Column({ name: 'email', unique : true })
   readonly email: string;
 
   @Column({ name: 'name' })
@@ -44,5 +45,8 @@ export class User {
   @OneToMany(()=>Registration, (registration)=> registration.user)
   registration : Registration[];
 
+  @OneToOne(()=>VerifyCode, (verify)=> verify.user)
+  
+  verifyCode : VerifyCode;
   
 }
