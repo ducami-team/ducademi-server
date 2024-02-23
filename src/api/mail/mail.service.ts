@@ -9,7 +9,7 @@ export class MailService {
     try {
       await this.mailerService.sendMail({
         to: email,
-        subject: '[Ducademi]비밀번호 변경',
+        subject: '[Ducademi]이메일 인증',
         text: code,
       });
     } catch (err) {

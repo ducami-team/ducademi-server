@@ -179,8 +179,7 @@ export class UserService {
     const compareDate: Date = new Date(
       verifyCationCode.createdAt.getTime() + 1 * 60000,
     );
-    console.log(currentTime);
-    console.log(compareDate);
+  
     if (currentTime >= compareDate) {
       await this.verifyCodeRepository.delete(verifyCationCode.id);
       throw new ForbiddenException('시간이 만료되었습니다.');

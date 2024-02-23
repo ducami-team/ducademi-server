@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+        }
+        .header {
+            text-align: center;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .verification-code {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #dcdcdc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>이메일 인증</h2>
+        </div>
+        <div class="content">
+            <p>인증번호</p>
+            <div class="verification-code">{{verificationCode}}</div>
+        </div>
+    </div>
+</body>
+</html>
