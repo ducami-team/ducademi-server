@@ -159,21 +159,32 @@ export class UserService {
 
   public async generateVerifycationCode(user: User): Promise<string> {
     const code: string = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log(code);
     const codeSave: any = {
       code,
       user,
     };
-    console.log(codeSave);
     await this.verifyCodeRepository.save(codeSave);
-    console.log('hi');
     return code;
   }
 
   public async verifyCode(userId: number, code: string): Promise<boolean> {
-    const verifyCationCode = await this.verifyCodeRepository.findOne({
-      where: { code, user: { id: userId } },
-    });
+    const verifyCationCode: VerifyCode =
+      await this.verifyCodeRepository.findOne({
+        where: { code, user: { id: userId } },
+      });
+    if (validationData(verifyCationCode)) {
+      throw new BadRequestException('존재하지 않는 코드입니다.');
+    }
+    const currentTime: Date = new Date(new Date().getTime() + 9 * 3600000);
+    const compareDate: Date = new Date(
+      verifyCationCode.createdAt.getTime() + 1 * 60000,
+    );
+    console.log(currentTime);
+    console.log(compareDate);
+    if (currentTime >= compareDate) {
+      await this.verifyCodeRepository.delete(verifyCationCode.id);
+      throw new ForbiddenException('시간이 만료되었습니다.');
+    }
     if (verifyCationCode) {
       await this.verifyCodeRepository.delete(verifyCationCode.id);
       return true;
@@ -190,5 +201,4 @@ export class UserService {
     await this.userRepository.update(userId, { password: hashedPassword });
     return;
   }
-  
 }
