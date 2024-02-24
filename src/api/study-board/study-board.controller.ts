@@ -1,19 +1,14 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   HttpStatus,
   Param,
-  Patch,
-  Post,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { StudyBoardService } from './study-board.service';
 import BaseResponse from 'src/global/response/base.response';
 import { StudyBoard } from './entity/study-board.entity';
+import { SearchDto } from './dto/search.dto';
 
 @Controller('study')
 export class StudyBoardController {
@@ -47,6 +42,11 @@ export class StudyBoardController {
     return new BaseResponse<StudyBoard>(HttpStatus.OK, '강의 상세보기 조회 성공',studyBoard);
   }
 
+  @Get('/search')
+  public async searchStudy(@Query() searchDto : SearchDto):Promise<BaseResponse<StudyBoard[]>>{
+    const studyBoards : StudyBoard[] = await this.studyBoardService.searchStudy(searchDto);
+    return new BaseResponse<StudyBoard[]>(HttpStatus.OK, '검색 결과', studyBoards);
+  }
 
 
   

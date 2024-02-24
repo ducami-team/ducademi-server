@@ -20,6 +20,7 @@ import { UserFixDto } from './dto/userFix.dto';
 import { isDifferentUtil } from 'src/global/utils/comparsion.util';
 import { AwsService } from '../aws/aws.service';
 import { VerifyCode } from './entity/verifyCode.entity';
+import { UserRole } from 'src/global/constatnts/userRole.enum';
 
 @Injectable()
 export class UserService {
@@ -57,7 +58,7 @@ export class UserService {
       email: signupDto.email,
       name: signupDto.name,
       grade: signupDto.grade,
-      //role : UserRole.admin
+      // role : UserRole.admin
     });
   }
 
