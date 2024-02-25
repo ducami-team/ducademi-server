@@ -21,6 +21,6 @@ jobs:
     - name: Build the Docker image
       run: docker build -t ducademi .
     - name: taging
-      run: docker tag manaweb-api:latest woaud/ducademi:latest
+      run: docker tag ducademi:latest woaud/ducademi:latest
     - name: Push to Dockerhub
       run: docker push woaud/ducademi:latest
