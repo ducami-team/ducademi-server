@@ -19,8 +19,8 @@ jobs:
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD      
 
     - name: Build the Docker image
-      run: docker build -t manaweb-api .
+      run: docker build -t ducademi .
     - name: taging
-      run: docker tag manaweb-api:latest mag123c/manaweb-api:latest
+      run: docker tag manaweb-api:latest woaud/ducademi:latest
     - name: Push to Dockerhub
-      run: docker push mag123c/manaweb-api:latest
+      run: docker push woaud/ducademi:latest
