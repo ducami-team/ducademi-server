@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login Dockerhub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD      
+
+    - name: Build the Docker image
+      run: docker build -t manaweb-api .
+    - name: taging
+      run: docker tag manaweb-api:latest mag123c/manaweb-api:latest
+    - name: Push to Dockerhub
+      run: docker push mag123c/manaweb-api:latest
