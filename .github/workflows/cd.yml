@@ -19,3 +19,4 @@ jobs:
       run: sudo docker rm -f ducademi-container || true
     - name: Run Docker Container
       run: sudo docker run -d -p 8080:8080 --name ducademi-container woaud/ducademi
+      ㅅㄷ
