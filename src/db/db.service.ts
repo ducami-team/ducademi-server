@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 
@@ -6,6 +6,7 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 export class MysqlConnectService implements TypeOrmOptionsFactory {
     constructor(private readonly configService : ConfigService){}
     createTypeOrmOptions(): TypeOrmModuleOptions | Promise<TypeOrmModuleOptions> {
+        Logger.log(this.configService.get<string>('DATABASE_HOST'));
         return { 
             type : 'mysql',
             host : this.configService.get<string>('DATABASE_HOST'),
