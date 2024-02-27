@@ -19,7 +19,7 @@ RUN npm run build
 CMD [ "node", "dist/main.js" ]
 
 ENV PORT=8080
-ENV DATABASE_HOST = localhost
+ENV DATABASE_HOST = 192.168.35.139
 ENV DATABASE_PORT = 3306
 ENV DATABASE_USER = root
 ENV DATABASE_PASSWORD = 123qweasdzxc!
