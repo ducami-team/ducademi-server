@@ -19,8 +19,3 @@ RUN npm run build
 CMD [ "node", "dist/main.js" ]
 
 
-ENV DATABASE_HOST = ducademi.cbh607ibpkv8.ap-northeast-2.rds.amazonaws.com
-ENV DATABASE_PORT = "3306"
-ENV DATABASE_USER = "root"
-ENV DATABASE_PASSWORD = "123qweasdzxc"!
-ENV DATABASE_DATABASE = "ducademi"
