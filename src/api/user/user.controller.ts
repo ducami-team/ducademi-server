@@ -119,4 +119,10 @@ export class UserController {
     const user : User = await this.userService.findByEmail(body.email);
     return new BaseResponse<string>(HttpStatus.OK, '아이디 조회 성공', user.userId);
   }
+
+  @Post('/id-check')
+  public async idCheck(@Body() body : {userId : string}) : Promise<BaseResponse<boolean>>{
+    const idCheck : boolean = await this.userService.idCheck(body.userId);
+    return new BaseResponse<boolean>(HttpStatus.OK, '사용가능한 ID입니다.', idCheck);
+  }
 }

@@ -180,7 +180,7 @@ export class UserService {
     const compareDate: Date = new Date(
       verifyCationCode.createdAt.getTime() + 1 * 60000,
     );
-  
+
     if (currentTime >= compareDate) {
       await this.verifyCodeRepository.delete(verifyCationCode.id);
       throw new ForbiddenException('시간이 만료되었습니다.');
@@ -200,5 +200,14 @@ export class UserService {
     const hashedPassword: string = await bcrypt.hash(newPassword, salt);
     await this.userRepository.update(userId, { password: hashedPassword });
     return;
+  }
+
+  public async idCheck(userId: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({where : {userId}});
+  
+    if (!user) {
+      return true;
+    }
+    throw new BadRequestException('사용중인 ID입니다.');
   }
 }
