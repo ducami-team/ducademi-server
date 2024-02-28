@@ -9,7 +9,8 @@ export class MysqlConnectService implements TypeOrmOptionsFactory {
         Logger.log(this.configService.get<string>('DATABASE_HOST'));
         return { 
             type : 'mysql',
-            host : this.configService.get<string>('DATABASE_HOST'),
+            // host : this.configService.get<string>('DATABASE_HOST'),
+            host : "ducademi.cbh607ibpkv8.ap-northeast-2.rds.amazonaws.com",
             port : this.configService.get<number>('DATABASE_PORT'),
             username : this.configService.get<string>('DATABASE_USERNAME'),
             password : this.configService.get<string>('DATABASE_PASSWORD'),
