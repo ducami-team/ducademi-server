@@ -58,7 +58,7 @@ export class UserService {
       email: signupDto.email,
       name: signupDto.name,
       grade: signupDto.grade,
-      role : UserRole.admin
+      // role : UserRole.admin
     });
   }
 
