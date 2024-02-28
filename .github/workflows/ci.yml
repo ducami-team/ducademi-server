@@ -10,24 +10,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      -  name: Copy .env file
+         run: cp .env $GITHUB_WORKSPACE
       - name: Login Dockerhub
         env:
           DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
           DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
-          DATABASE_HOST: ${{secrets.DATABASE_HOST}}
-          DATABASE_PORT: ${{secrets.DATABASE_PORT}}
-          DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
-          DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-          JWT_SECRET: ${{secrets.JWT_SECRET}}
-          TOKEN_EXPIRED: ${{secrets.TOKEN_EXPIRED}}
-          EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          REFRESH_EXPIRED: ${{secrets.REFRESH_EXPIRED}}
-          AWS_S3_ACCESS_KEY: ${{secrets.AWS_S3_ACCESS_KEY}}
-          AWS_S3_SECRET_ACCESS_KEY: ${{secrets.AWS_S3_SECRET_ACCESS_KEY}}
-          AWS_REGION: ${{secrets.TOKEN_EXPIRED}}
-          EMAIL_ADDRESS: ${{secrets.EMAIL_ADDRESS}}
-          AWS_S3_BUCKET_NAME: ${{secrets.AWS_S3_BUCKET_NAME}}
-          HASH_SALT: ${{secrets.HASH_SALT}}
+          
 
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
